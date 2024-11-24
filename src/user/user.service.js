@@ -1,4 +1,4 @@
-const { createUser, deleteUser, findAllUsers, findUserByEmail, findUserById, updateUser, findUserByName } = require('./user.repository.js');
+const { createUser, deleteUser, findAllUsers, findUserById, updateUser } = require('./user.repository.js');
  const getUser = async () => {
    return await findAllUsers()
 };

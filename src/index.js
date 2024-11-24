@@ -15,8 +15,10 @@ app.get('/', (req, res) => {
 })
 
 const userController = require('./user/user.controller')
+const taskController = require('./task/task.controller')
 
 app.use('/api', userController)
+app.use('/api', taskController)
 
 
 
