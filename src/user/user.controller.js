@@ -1,10 +1,11 @@
 const express = require('express');
 const { getUser, insertUserData, deleteUserData, updateUserData, getUserById, getUserByName } = require('./user.service');
+const { authenticateToken } = require('../middleware/middleware');
 
 const router = express.Router();
 
 // Endpoint untuk mendapatkan semua user
-router.get('/users', async (req, res) => {
+router.get('/users', authenticateToken, async (req, res) => {
    try {
       const allUsers = await getUser();
       res.status(200).json({
@@ -19,7 +20,7 @@ router.get('/users', async (req, res) => {
    }
 });
 
-router.get('/user/:id', async (req, res) => {
+router.get('/user/:id', authenticateToken, async (req, res) => {
    const id = req.params.id;
    try {
       const user = await getUserById(id);
@@ -37,7 +38,7 @@ router.get('/user/:id', async (req, res) => {
 
 
 // Endpoint untuk menambahkan user baru
-router.post('/user', async (req, res) => {
+router.post('/user', authenticateToken, async (req, res) => {
    const newUserData = req.body;
 
    // Validasi data yang masuk
@@ -62,7 +63,7 @@ router.post('/user', async (req, res) => {
 });
 
 
-router.patch('/user/:id', async (req, res) => {
+router.patch('/user/:id', authenticateToken, async (req, res) => {
    const id = req.params.id;
    const newUserData = req.body;
    try {
@@ -78,7 +79,7 @@ router.patch('/user/:id', async (req, res) => {
    }
 });
 
-router.delete('/user/:id', async (req, res) => {
+router.delete('/user/:id', authenticateToken, async (req, res) => {
    const id = req.params.id;
 
    try {

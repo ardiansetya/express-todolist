@@ -1,12 +1,14 @@
 const express = require('express');
 const { getTask, insertTaskData, deleteTaskData, updateTaskData, getTaskById, getTaskByName } = require('./task.service');
+const { authenticateToken } = require('../middleware/middleware');
 
 const router = express.Router();
 
 // Endpoint untuk mendapatkan semua Task
-router.get('/tasks', async (req, res) => {
+router.get('/tasks', authenticateToken, async (req, res) => {
+   const userId = req.user.userId
    try {
-      const allTasks = await getTask();
+      const allTasks = await getTask(userId);
       res.status(200).json({
          data: allTasks,
          message: "Task berhasil ditemukan",
@@ -19,7 +21,7 @@ router.get('/tasks', async (req, res) => {
    }
 });
 
-router.get('/task/:id', async (req, res) => {
+router.get('/task/:id', authenticateToken, async (req, res) => {
    const id = req.params.id;
    try {
       const task = await getTaskById(id);
@@ -37,13 +39,15 @@ router.get('/task/:id', async (req, res) => {
 
 
 // Endpoint untuk menambahkan Task baru
-router.post('/task', async (req, res) => {
+router.post('/task', authenticateToken, async (req, res) => {
+   const userId = req.user.userId
+   console.log(userId);
    const newTaskData = req.body;
    console.log(newTaskData);
    
 
    try {
-      const newTask = await insertTaskData(newTaskData);
+      const newTask = await insertTaskData(userId, newTaskData);
       res.status(201).json({
          data: newTask,
          message: "Task berhasil ditambahkan",
@@ -58,13 +62,14 @@ router.post('/task', async (req, res) => {
 
 
 
-router.patch('/task/:id', async (req, res) => {
-   const id = req.params.id;
+router.patch('/task/:id', authenticateToken, async (req, res) => {
+   const userId = req.user.userId
+   const id = req.params.id
    const newTaskData = req.body;
 
    console.log(newTaskData);
    try {
-      const updatedTask = await updateTaskData(id, newTaskData);
+      const updatedTask = await updateTaskData(id, userId, newTaskData);
       res.status(200).json({
          data: updatedTask,
          message: "Task berhasil diperbarui",
@@ -76,13 +81,13 @@ router.patch('/task/:id', async (req, res) => {
    }
 });
 
-router.delete('/task/:id', async (req, res) => {
+router.delete('/task/:id', authenticateToken, async (req, res) => {
    const id = req.params.id;
+   const userId = req.user.userId
 
    try {
-      const deletedTask = await deleteTaskData(id);
+      const deletedTask = await deleteTaskData(id, userId);
       res.status(200).json({
-         data: deletedTask,
          message: "Task berhasil dihapus",
       });
    } catch (error) {

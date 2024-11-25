@@ -1,12 +1,12 @@
 const { createTask, deleteTask, findAllTasks, findTaskById, updateTask, findTaskByTitle } = require('./task.repository.js');
-const getTask = async () => {
-   return await findAllTasks()
+const getTask = async (userId) => {
+   return await findAllTasks(userId)
 };
 
 
-const getTaskById = async (id) => {
+const getTaskById = async (id, userId) => {
 
-   const taskId = await findTaskById(id)
+   const taskId = await findTaskById(id, userId)
    if (!taskId) {
       throw new Error("Task tidak ditemukan")
    }
@@ -23,38 +23,31 @@ const getTaskByTitle = async (taskTitle) => {
 }
 
 
-const insertTaskData = async (newTaskData) => {
+const insertTaskData = async (userId, newTaskData) => {
 
-   if (!newTaskData.title || !newTaskData.description || !newTaskData.userId) {
+   if (!newTaskData.title || !newTaskData.description) {
       throw new Error("Semua Field harus diisi")
    }
 
-   const titleExist = await findTaskByTitle(newTaskData.title)
+   const titleExist = await findTaskByTitle( newTaskData.title)
    if (titleExist) {
       throw new Error("title sudah terdaftar")
    }
 
-   const task = await createTask(newTaskData)
+   const task = await createTask(userId, newTaskData)
    return task
 }
 
+const updateTaskData = async (id, userId, newTaskData) => {
 
-
-
-
-
-
-
-const updateTaskData = async (id, newTaskData) => {
-
-   const task = await updateTask(id, newTaskData)
+   const task = await updateTask(id, userId, newTaskData)
 
    return task
 }
 
-const deleteTaskData = async (id) => {
+const deleteTaskData = async (id, userId) => {
 
-   const taskId = await findTaskById(id)
+   const taskId = await getTaskById(id, userId)
    if (!taskId) {
       throw new Error("Task tidak ditemukan")
    }

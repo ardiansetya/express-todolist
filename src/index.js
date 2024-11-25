@@ -16,7 +16,9 @@ app.get('/', (req, res) => {
 
 const userController = require('./user/user.controller')
 const taskController = require('./task/task.controller')
+const authController = require('./auth/auth.controller')
 
+app.use('/auth', authController)
 app.use('/api', userController)
 app.use('/api', taskController)
 
